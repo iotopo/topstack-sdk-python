@@ -1,13 +1,5 @@
 # TopStack Python SDK
 
-TopStack 是一款轻量型 Web 组态软件，提供设备数据采集、定时任务、控制策略、联动控制、设备告警、设备维护管理、设备绩效管理、能源管理、组态开发、报表开发等功能。支持移动端访问，支持本地部署，可帮助企业从无到有快速搭建工业物联网平台。
-
-TopStack 目前已完成了信创生态的全面适配：
-
-* 适配国产服务器：龙芯、飞腾、鲲鹏、海光、兆芯等。
-* 适配国产操作系统：麒麟、统信等操作系统。
-* 适配国产数据库：达梦、人大金仓等国产数据库。
-
 TopStack Python SDK 是一个用于与 TopStack 平台交互的 Python 客户端库，提供了完整的 API 封装和便捷的使用接口。
 
 ## 功能特性
@@ -26,7 +18,6 @@ topstack-sdk-python/
 ├── LICENSE
 ├── pyproject.toml          # 项目配置
 ├── README.md              # 项目说明
-├── requirements.txt       # 依赖列表
 ├── src/                   # 源代码目录
 │   └── topstack_sdk/      # SDK 包
 │       ├── __init__.py
@@ -64,10 +55,7 @@ pip install topstack-sdk
 git clone https://github.com/topstack/topstack-sdk-python.git
 cd topstack-sdk-python
 
-# 安装依赖
-pip install -r requirements.txt
-
-# 开发模式安装
+# 开发模式安装（推荐）
 pip install -e .
 ```
 
@@ -239,11 +227,8 @@ python -m twine upload dist/*
 git clone https://github.com/topstack/topstack-sdk-python.git
 cd topstack-sdk-python
 
-# 安装依赖
-pip install -r requirements.txt
-
-# 设置 PYTHONPATH
-export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
+# 开发模式安装
+pip install -e .
 
 # 在代码中使用
 python examples/basic_usage.py
@@ -306,7 +291,7 @@ TOPSTACK_CONFIG = {
    pip list | grep -E "(requests|pydantic|python-dateutil)"
    
    # 重新安装依赖
-   pip install -r requirements.txt --force-reinstall
+   pip install . --force-reinstall
    ```
 
 3. **API 端点问题**

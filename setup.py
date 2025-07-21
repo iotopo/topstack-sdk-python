@@ -1,32 +1,40 @@
+#!/usr/bin/env python3
+"""
+TopStack Python SDK 安装配置
+"""
+
 from setuptools import setup, find_packages
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
-
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
-
 setup(
-    name="topstack-sdk-python",
+    name="topstack-sdk",
     version="1.0.0",
-    author="TopStack",
+    description="TopStack Python SDK - 用于与 TopStack 平台交互的 Python 客户端库",
+    author="TopStack Team",
     author_email="support@topstack.com",
-    description="TopStack Python SDK",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
     url="https://github.com/topstack/topstack-sdk-python",
-    packages=find_packages(),
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
+    include_package_data=True,
+    install_requires=[
+        "requests>=2.25.0",
+        "pydantic>=1.8.0",
+        "python-dateutil>=2.8.0"
+    ],
+    python_requires=">=3.7",
+    license="MIT",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: System :: Networking",
+        "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
     ],
-    python_requires=">=3.8",
-    install_requires=requirements,
 ) 

@@ -18,7 +18,7 @@ echo 检查依赖...
 python -c "import requests, pydantic" >nul 2>&1
 if errorlevel 1 (
     echo 正在安装依赖...
-    pip install -r requirements.txt
+    pip install -e .
     if errorlevel 1 (
         echo 错误: 依赖安装失败
         pause
@@ -31,7 +31,7 @@ echo 依赖检查通过
 REM 运行示例
 echo.
 echo 开始运行示例...
-python run_example.py
+python examples\basic_usage.py
 
 echo.
 echo 示例运行完成

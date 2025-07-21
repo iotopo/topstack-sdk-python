@@ -2,20 +2,31 @@
 TopStack SDK 基本使用示例
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from topstack_sdk import TopStackClient
 from topstack_sdk.iot import IotApi
 from topstack_sdk.alert import AlertApi
 from topstack_sdk.asset import AssetApi
+from config import TOPSTACK_CONFIG
 
 
 def main():
     """基本使用示例"""
     
+    print("=== TopStack SDK 基本使用示例 ===")
+    print("当前配置参数：")
+    for k, v in TOPSTACK_CONFIG.items():
+        print(f"  {k}: {v}")
+    
     # 1. 创建客户端
     client = TopStackClient(
-        base_url="http://localhost:8000",
-        api_key="your-api-key",
-        project_id="your-project-id"
+        base_url=TOPSTACK_CONFIG["base_url"],
+        api_key=TOPSTACK_CONFIG["api_key"],
+        project_id=TOPSTACK_CONFIG["project_id"],
+        timeout=TOPSTACK_CONFIG["timeout"],
+        verify_ssl=TOPSTACK_CONFIG["verify_ssl"]
     )
     
     print("=== TopStack SDK 基本使用示例 ===")
