@@ -10,6 +10,7 @@ TopStack Python SDK 是一个用于与 TopStack 平台交互的 Python 客户端
 - 📦 **标准包结构** - 采用现代 Python 包结构，支持 src 布局
 - 🧪 **完整测试** - 包含单元测试和集成测试
 - 📚 **详细文档** - 提供完整的使用示例和 API 文档
+- 🔄 **实时数据** - 支持 NATS 消息总线，实时接收设备数据、状态和告警信息
 
 ## 项目结构
 
@@ -26,13 +27,15 @@ topstack-sdk-python/
 │       ├── asset/         # 资产管理模块
 │       ├── datav/         # 数据可视化模块
 │       ├── ems/           # 能源管理模块
-│       └── iot/           # IoT 模块
+│       ├── iot/           # IoT 模块
+│       └── nats.py        # NATS 消息总线模块
 ├── tests/                 # 测试目录
 │   ├── __init__.py
 │   ├── test_client.py
 │   └── test_iot.py
 ├── examples/              # 示例代码
-│   └── basic_usage.py
+│   ├── basic_usage.py
+│   └── nats_example.py   # NATS 消息总线示例
 └── scripts/               # 工具脚本
     ├── explore_apis.py
     └── diagnose_connection.py
@@ -159,6 +162,100 @@ meters = ems_api.query_meters(pageNum=1, pageSize=10)
 
 # 查询用能单元
 sectors = ems_api.query_sectors(pageNum=1, pageSize=10)
+```
+
+### NATS 消息总线模块
+
+```python
+import asyncio
+from topstack_sdk import NatsConfig, create_nats_bus
+
+# 创建 NATS 配置
+config = NatsConfig(
+    addr="nats://localhost:4222",  # NATS 服务器地址
+    token="your_token_here",       # 认证令牌（可选）
+    username="your_username",       # 用户名（可选）
+    password="your_password"        # 密码（可选）
+)
+
+async def point_data_handler(point_data):
+    """处理测点数据"""
+    print(f"收到测点数据: 设备={point_data.device_id}, 测点={point_data.point_id}, 值={point_data.value}")
+
+async def device_state_handler(device_state):
+    """处理设备状态数据"""
+    status = "在线" if device_state.state == 1 else "离线"
+    print(f"设备状态变化: 设备={device_state.device_id}, 状态={status}")
+
+async def alert_info_handler(alert_info):
+    """处理告警信息"""
+    print(f"收到告警: ID={alert_info.alert_id}, 标题={alert_info.title}")
+
+async def main():
+    # 创建 NATS 总线
+    nats_bus = await create_nats_bus(config)
+    
+    # 订阅设备测点数据
+    point_sub = await nats_bus.subscribe_point_data(
+        "project_id", "device_id", "point_id", point_data_handler
+    )
+    
+    # 订阅设备状态数据
+    device_state_sub = await nats_bus.subscribe_device_state(
+        "project_id", "device_id", device_state_handler
+    )
+    
+    # 订阅告警信息
+    alert_sub = await nats_bus.subscribe_alert_info(
+        "project_id", alert_info_handler
+    )
+    
+    # 保持连接运行
+    try:
+        while True:
+            await asyncio.sleep(1)
+    except KeyboardInterrupt:
+        # 取消订阅并关闭连接
+        await point_sub.unsubscribe()
+        await device_state_sub.unsubscribe()
+        await alert_sub.unsubscribe()
+        await nats_bus.close()
+
+# 运行
+asyncio.run(main())
+```
+
+#### 支持的消息类型
+
+- **设备测点数据** (`PointData`): 实时设备测点值
+- **设备状态数据** (`DeviceState`): 设备在线/离线状态
+- **网关状态数据** (`GatewayState`): 网关在线/离线状态
+- **数据通道状态** (`ChannelState`): 数据通道运行状态
+- **告警信息** (`AlertInfo`): 实时告警消息
+
+#### 订阅方法
+
+```python
+# 订阅设备测点数据
+await nats_bus.subscribe_point_data(project_id, device_id, point_id, callback)
+
+# 订阅同设备模型下的测点数据
+await nats_bus.subscribe_device_type_data(project_id, device_type_id, point_id, callback)
+
+# 订阅设备状态数据
+await nats_bus.subscribe_device_state(project_id, device_id, callback)
+
+# 订阅网关状态数据
+await nats_bus.subscribe_gateway_state(project_id, callback)
+
+# 订阅数据通道状态数据
+await nats_bus.subscribe_channel_state(project_id, callback)
+
+# 订阅全部告警消息
+await nats_bus.subscribe_alert_info(project_id, callback)
+
+# 订阅设备告警信息
+await nats_bus.subscribe_device_alert_info(project_id, device_id, callback)
 ```
 
 ## 开发

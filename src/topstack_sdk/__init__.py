@@ -10,6 +10,16 @@ from .alert import AlertApi
 from .asset import AssetApi
 from .ems import EmsApi
 from .datav import DatavApi
+from .nats import (
+    NatsConfig, 
+    create_nats_bus, 
+    NatsBus, 
+    PointData, 
+    DeviceState, 
+    GatewayState, 
+    ChannelState, 
+    AlertInfo
+)
 
 __version__ = "1.0.0"
 __all__ = [
@@ -19,5 +29,13 @@ __all__ = [
     "AlertApi",
     "AssetApi",
     "EmsApi",
-    "DatavApi"
+    "DatavApi",
+    "NatsConfig",
+    "create_nats_bus",
+    "NatsBus",
+    "PointData",
+    "DeviceState",
+    "GatewayState",
+    "ChannelState",
+    "AlertInfo"
 ] 
