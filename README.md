@@ -376,8 +376,8 @@ pip install dist/topstack_sdk-1.0.0-py3-none-any.whl
 
 ```bash
 export TOPSTACK_BASE_URL="http://localhost:8000"
-export TOPSTACK_API_KEY="your-api-key"
-export TOPSTACK_PROJECT_ID="your-project-id"
+export TOPSTACK_APP_ID="your-app-id"
+export TOPSTACK_APP_SECRET="your-app-secret"
 ```
 
 ### 配置文件
@@ -386,8 +386,8 @@ export TOPSTACK_PROJECT_ID="your-project-id"
 # config.py
 TOPSTACK_CONFIG = {
     "base_url": "http://localhost:8000",
-    "api_key": "your-api-key",
-    "project_id": "your-project-id"
+    "app_id": "your-app-id",
+    "app_secret": "your-app-secret"
 }
 ```
 
