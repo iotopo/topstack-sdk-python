@@ -11,6 +11,7 @@ TopStack Python SDK 是一个用于与 TopStack 平台交互的 Python 客户端
 - 🧪 **完整测试** - 包含单元测试和集成测试
 - 📚 **详细文档** - 提供完整的使用示例和 API 文档
 - 🔄 **实时数据** - 支持 NATS 消息总线，实时接收设备数据、状态和告警信息
+- 🔐 **安全认证** - 支持 AppID/AppSecret 认证，自动令牌管理和刷新
 
 ## 项目结构
 
@@ -40,6 +41,27 @@ topstack-sdk-python/
     ├── explore_apis.py
     └── diagnose_connection.py
 ```
+
+## 认证方式
+
+TopStack Python SDK 使用 AppID/AppSecret 认证方式：
+
+```python
+from topstack_sdk import TopStackClient
+
+# 使用 AppID/AppSecret 认证方式
+client = TopStackClient(
+    base_url="http://localhost:8000",
+    app_id="your-app-id",
+    app_secret="your-app-secret"
+)
+```
+
+**认证方式说明：**
+- **AppID/AppSecret 认证**：通过获取访问令牌进行认证，支持令牌自动刷新，适合企业级应用
+- 自动调用 `/open_api/v1/auth/access_token` 接口获取访问令牌
+- 访问令牌自动缓存，并在过期前5分钟自动刷新
+- 所有 API 调用自动携带 Bearer 令牌进行认证
 
 ## 快速开始
 
@@ -71,8 +93,8 @@ from topstack_sdk.iot import IotApi
 # 创建客户端
 client = TopStackClient(
     base_url="http://localhost:8000",
-    api_key="your-api-key",
-    project_id="your-project-id"
+    app_id="your-app-id",
+    app_secret="your-app-secret"
 )
 
 # 使用 IoT API

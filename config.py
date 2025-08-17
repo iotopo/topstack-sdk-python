@@ -9,11 +9,11 @@ TOPSTACK_CONFIG = {
     # TopStack 服务地址
     "base_url": "http://localhost:8000",
     
-    # API 密钥 - 请替换为您的实际 API 密钥
-    "api_key": "8mphozy98fkor6iu",
+    # 应用 ID - 请替换为您的实际应用 ID
+    "app_id": "your-app-id",
     
-    # 项目 ID - 请替换为您的实际项目 ID
-    "project_id": "iotopo",
+    # 应用密钥 - 请替换为您的实际应用密钥
+    "app_secret": "your-app-secret",
     
     # 请求超时时间（秒）
     "timeout": 30,

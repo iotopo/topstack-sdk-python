@@ -16,15 +16,15 @@ class TestTopStackClient(unittest.TestCase):
         """设置测试环境"""
         self.client = TopStackClient(
             base_url="http://localhost:8000",
-            api_key="test-api-key",
-            project_id="test-project"
+            app_id="test-app-id",
+            app_secret="test-app-secret"
         )
     
     def test_client_initialization(self):
         """测试客户端初始化"""
         self.assertEqual(self.client.base_url, "http://localhost:8000")
-        self.assertEqual(self.client.api_key, "test-api-key")
-        self.assertEqual(self.client.project_id, "test-project")
+        self.assertEqual(self.client.app_id, "test-app-id")
+        self.assertEqual(self.client.app_secret, "test-app-secret")
         self.assertEqual(self.client.timeout, 20)
         self.assertFalse(self.client.verify_ssl)
     
@@ -32,8 +32,6 @@ class TestTopStackClient(unittest.TestCase):
         """测试客户端请求头"""
         expected_headers = {
             'Content-Type': 'application/json',
-            'X-API-Key': 'test-api-key',
-            'x-ProjectID': 'test-project',
         }
         self.assertEqual(self.client.session.headers, expected_headers)
 
@@ -44,8 +42,8 @@ class TestIotApi(unittest.TestCase):
         """设置测试环境"""
         self.client = TopStackClient(
             base_url="http://localhost:8000",
-            api_key="test-api-key",
-            project_id="test-project"
+            app_id="test-app-id",
+            app_secret="test-app-secret"
         )
         self.iot_api = IotApi(self.client)
     
@@ -108,8 +106,8 @@ class TestDeviceApi(unittest.TestCase):
         """设置测试环境"""
         self.client = TopStackClient(
             base_url="http://localhost:8000",
-            api_key="test-api-key",
-            project_id="test-project"
+            app_id="test-app-id",
+            app_secret="test-app-secret"
         )
         self.device_api = DeviceApi(self.client)
     

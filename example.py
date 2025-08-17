@@ -13,12 +13,12 @@ from topstack.datav import DatavApi
 def main():
     """主函数"""
     # 初始化客户端
-    api_key = "8mphozy98fkor6iu"
-    project_id = "iotopo"
+    app_id = "your-app-id"
+    app_secret = "your-app-secret"
     client = TopStackClient(
         base_url="http://localhost:8000",
-        api_key=api_key,
-        project_id=project_id
+        app_id=app_id,
+        app_secret=app_secret
     )
     
     # 创建各个 API 实例

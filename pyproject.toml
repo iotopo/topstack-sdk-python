@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "topstack-sdk"
-version = "1.0.2"
+version = "1.0.3"
 description = "TopStack Python SDK - 用于与 TopStack 平台交互的 Python 客户端库"
 readme = "README.md"
 license = {text = "MIT"}

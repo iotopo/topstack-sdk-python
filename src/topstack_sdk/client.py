@@ -5,7 +5,7 @@ TopStack 客户端核心模块
 import json
 import time
 from typing import Any, Dict, Generic, Optional, TypeVar, Union
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 from pydantic import BaseModel, Field
 
@@ -29,8 +29,8 @@ class TopStackClient:
     def __init__(
         self,
         base_url: str,
-        api_key: str,
-        project_id: str,
+        app_id: str,
+        app_secret: str,
         timeout: int = 20,
         verify_ssl: bool = False
     ):
@@ -39,29 +39,93 @@ class TopStackClient:
         
         Args:
             base_url: API 基础 URL
-            api_key: API 密钥
-            project_id: 项目 ID
+            app_id: 应用 ID
+            app_secret: 应用密钥
             timeout: 请求超时时间（秒）
             verify_ssl: 是否验证 SSL 证书
         """
         self.base_url = base_url.rstrip('/')
-        self.api_key = api_key
-        self.project_id = project_id
+        self.app_id = app_id
+        self.app_secret = app_secret
         self.timeout = timeout
         self.verify_ssl = verify_ssl
+        
+        # 访问令牌相关
+        self.access_token = None
+        self.token_expires_at = None
         
         # 创建会话
         self.session = requests.Session()
         self.session.headers.update({
             'Content-Type': 'application/json',
-            'X-API-Key': api_key,
-            'x-ProjectID': project_id,
         })
         
         if not verify_ssl:
             # 禁用 SSL 验证警告
             import urllib3
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    
+    def _get_access_token(self) -> str:
+        """
+        获取访问令牌
+        
+        Returns:
+            访问令牌字符串
+            
+        Raises:
+            TopStackError: 获取令牌失败时抛出异常
+        """
+        # 检查令牌是否还有效（提前5分钟过期）
+        if (self.access_token and self.token_expires_at and 
+            datetime.now() < self.token_expires_at):
+            return self.access_token
+        
+        try:
+            # 准备认证请求数据
+            auth_data = {
+                "app_id": self.app_id,
+                "app_secret": self.app_secret
+            }
+            
+            # 发送认证请求
+            response = self.session.post(
+                f"{self.base_url}/open_api/v1/auth/access_token",
+                json=auth_data,
+                timeout=self.timeout,
+                verify=self.verify_ssl
+            )
+            
+            if not response.ok:
+                raise TopStackError(
+                    f"获取访问令牌失败: HTTP {response.status_code}",
+                    response.status_code,
+                    None
+                )
+            
+            # 解析响应
+            resp_data = response.json()
+            
+            # 检查业务错误
+            if resp_data.get('code'):
+                raise TopStackError(
+                    f"获取访问令牌失败: {resp_data.get('code')}, {resp_data.get('msg', '')}",
+                    response.status_code,
+                    None
+                )
+            
+            # 保存令牌信息
+            self.access_token = resp_data.get('access_token')
+            expire_seconds = resp_data.get('expire', 3600)
+            
+            # 提前5分钟过期
+            self.token_expires_at = datetime.now() + timedelta(seconds=expire_seconds - 300)
+            
+            return self.access_token
+            
+        except requests.exceptions.RequestException as e:
+            raise TopStackError(f"获取访问令牌请求失败: {str(e)}", 0, None)
+        except json.JSONDecodeError as e:
+            raise TopStackError(f"解析访问令牌响应失败: {str(e)}", 0, None)
     
     def _make_request(
         self,
@@ -82,6 +146,10 @@ class TopStackClient:
         Returns:
             Response 对象
         """
+        # 获取访问令牌并设置认证头部
+        access_token = self._get_access_token()
+        self.session.headers['Authorization'] = f'Bearer {access_token}'
+        
         url = f"{self.base_url}{endpoint}"
         
         try:

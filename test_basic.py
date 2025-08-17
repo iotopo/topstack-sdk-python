@@ -44,15 +44,15 @@ def test_client_creation():
         
         client = TopStackClient(
             base_url=TOPSTACK_CONFIG["base_url"],
-            api_key=TOPSTACK_CONFIG["api_key"],
-            project_id=TOPSTACK_CONFIG["project_id"],
+            app_id=TOPSTACK_CONFIG["app_id"],
+            app_secret=TOPSTACK_CONFIG["app_secret"],
             timeout=TOPSTACK_CONFIG["timeout"],
             verify_ssl=TOPSTACK_CONFIG["verify_ssl"]
         )
         
         print("✓ 客户端创建成功")
         print(f"  基础 URL: {client.base_url}")
-        print(f"  项目 ID: {client.project_id}")
+        print(f"  应用 ID: {client.app_id}")
         print(f"  超时时间: {client.timeout}秒")
         
         return True

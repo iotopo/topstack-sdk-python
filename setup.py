@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="topstack-sdk",
-    version="1.0.0",
+    version="1.0.3",
     description="TopStack Python SDK - 用于与 TopStack 平台交互的 Python 客户端库",
     author="TopStack Team",
     author_email="support@topstack.com",
